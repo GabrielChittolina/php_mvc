@@ -1,0 +1,49 @@
+button, input, select, textarea {
+    font-family: inherit;
+    font-size: 100%;
+}
+
+input {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+}
+
+select {
+    width: 100%;
+    margin: 8px 0;
+    padding: 16px 20px;
+    border-radius: 4px;
+    background-color: #f1f1f1;
+}
+
+button {
+    background-color: #5f9ea0;
+    color: black;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+button:hover {
+    opacity:1;
+}
+
+.invalid {
+    border-color: #ff6261;
+}
+
+.cadastro-div {
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: #f1f1f1;
+    padding: 20px;
+}
+
+label {
+    margin-bottom: 50px;
+}
