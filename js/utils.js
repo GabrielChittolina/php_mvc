@@ -1,6 +1,6 @@
 /*
-@params - parâmetros (method, url, async, callback, postData) para fazer a requisição (XMLHttpRequest)
-Realiza uma requisição XMLHttpRequest
+@params - parÃ¢metros (method, url, async, callback, postData) para fazer a requisiÃ§Ã£o (XMLHttpRequest)
+Realiza uma requisiÃ§Ã£o XMLHttpRequest
  */
 function makeXMLHttpRequest(params) {
     let xhr = new XMLHttpRequest();
@@ -16,4 +16,22 @@ function makeXMLHttpRequest(params) {
     } else {
         xhr.send();
     }
+}
+/*
+@params - parÃ£metros (elementId, eventType, callbackParam, callback)
+Adiciona um eventListener no elemento de id=elementID
+ */
+function eventListener(params) {
+    let element = document.getElementById(params.elementId);
+    element.addEventListener(params.eventType, (eve)=> {
+        if(params.callbackParam === 'element') {
+            params.callback(element);
+        } else if (params.callbackParam === 'event') {
+            params.callback(eve);
+        } else if (params.callbackParam === 'both'){
+            params.callback(element, eve);
+        } else {
+            params.callback();
+        }
+    });
 }
