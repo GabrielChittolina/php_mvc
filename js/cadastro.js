@@ -1,5 +1,5 @@
 /*
-Pega os dados do form e transforma em uma string JSON para mandar na requisição em 'enviarCadastro'
+Pega os dados do form e transforma em uma string JSON para mandar na requisiÃ§Ã£o em 'enviarCadastro'
  */
 function jsonFormData() {
     let form = document.querySelector('form');
@@ -8,8 +8,8 @@ function jsonFormData() {
     return JSON.stringify(entries);
 }
 /*
-Prepara os parâmetros para uma requisição e chama a função makeXMLHttpRequest
-Envia os dados do formulário de cadastro por post, para serem inseridos no banco de dados
+Prepara os parÃ¢metros para uma requisiÃ§Ã£o e chama a funÃ§Ã£o makeXMLHttpRequest
+Envia os dados do formulÃ¡rio de cadastro por post, para serem inseridos no banco de dados
  */
 function enviarCadastro() {
     let params = {
@@ -32,8 +32,8 @@ function enviarCadastro() {
 }
 
 /*
-@cpf - string de números do cpf
-Aplica a máscara no cpf (123.456.789-12)
+@cpf - string de nÃºmeros do cpf
+Aplica a mÃ¡scara no cpf (123.456.789-12)
  */
 function mascaraCpf(cpf) {
     cpf = cpf.replace(/\D/g, "");
@@ -43,9 +43,9 @@ function mascaraCpf(cpf) {
     return cpf;
 }
 /*
-@strCPF - cpf em string com máscara
-Realiza a validação de CPF
-Retorna True se for válido
+@strCPF - cpf em string com mÃ¡scara
+Realiza a validaÃ§Ã£o de CPF
+Retorna True se for vÃ¡lido
  */
 function testaCPF(strCPF) {
     let Soma;
@@ -73,30 +73,78 @@ function testaCPF(strCPF) {
     if ((Resto === 10) || (Resto === 11)) Resto = 0;
     return Resto === parseInt(strCPF.substring(10, 11));
 }
+
+function required(elementId) {
+    let eventParams = {
+        elementId: elementId,
+        eventType: 'blur',
+        callbackParam: 'element',
+        callback: (element) => {
+            if (!element.validity.valid) {
+                element.classList.add("required");
+            } else {
+                element.classList.remove("required");
+            }
+        }
+    }
+    eventListener(eventParams);
+}
+
+function isValid(campos) {
+    let valid = true;
+    campos.forEach((e) => {
+        let element = document.getElementById(e);
+        if (!element.validity.valid) {
+            valid = false;
+            element.classList.add("required");
+        } else {
+            element.classList.remove("required");
+        }
+    });
+    return valid;
+}
+
 /*
-Função chamada após o carregamento da DOM pelo eventListener ouvindo "DOMContentLoaded"
+FunÃ§Ã£o chamada apÃ³s o carregamento da DOM pelo eventListener ouvindo "DOMContentLoaded"
  */
 function loadCadastro() {
-    let button = document.getElementById("enviar-cadastro");
-    button.addEventListener("click", function () {
-        let cpf = document.getElementById('cpf');
-        if (testaCPF(cpf.value)) {
-            enviarCadastro();
-        } else {
-            console.log('CPF Inválido');
+    let campos = ['nome', 'sobrenome', 'cpf', 'nascimento'];
+    let btnEventParams = {
+        elementId: 'enviar-cadastro',
+        eventType: 'click',
+        callbackParam: '',
+        callback: () => {
+            let cpf = document.getElementById('cpf');
+            if (!isValid(campos)) {
+                alert('Campos com * sÃ£o obrigatÃ³rios.');
+            } else if (!testaCPF(cpf.value)) {
+                alert('CPF InvÃ¡lido.');
+            } else {
+                enviarCadastro();
+            }
         }
-    }, false);
+    }
+    let cpfEventParams = {
+        elementId: 'cpf',
+        eventType: 'input',
+        callbackParam: 'both',
+        callback: (element, event) => {
+            event.target.value = mascaraCpf(event.target.value);
+            if (!testaCPF(element.value)) {
+                element.classList.add("invalid");
+            } else {
+                element.classList.remove("invalid");
+            }
+        }
+    }
 
-    let cpf = document.getElementById('cpf');
-    cpf.addEventListener('input', function (e) {
-        e.target.value = mascaraCpf(e.target.value);
-        if (!testaCPF(cpf.value)) {
-            cpf.classList.add("invalid");
-        } else {
-            cpf.classList.remove("invalid");
-        }
-        return true;
-    });
+    eventListener(btnEventParams);
+    eventListener(cpfEventParams);
+
+    required('nome');
+    required('sobrenome');
+    required('cpf');
+    required('nascimento');
 
     let params = new URLSearchParams(window.location.search);
     if (params.get('id')) {
