@@ -1,5 +1,5 @@
 /*
-Pega os dados do form e transforma em uma string JSON para mandar na requisi√ß√£o em 'enviarCadastro'
+Pega os dados do form e transforma em uma string JSON para mandar na requisiÁ„o em 'enviarCadastro'
  */
 function jsonFormData() {
     let form = document.querySelector('form');
@@ -7,9 +7,10 @@ function jsonFormData() {
     let entries = Object.fromEntries(formData);
     return JSON.stringify(entries);
 }
+
 /*
-Prepara os par√¢metros para uma requisi√ß√£o e chama a fun√ß√£o makeXMLHttpRequest
-Envia os dados do formul√°rio de cadastro por post, para serem inseridos no banco de dados
+Prepara os par‚metros para uma requisiÁ„o e chama a funÁ„o makeXMLHttpRequest
+Envia os dados do formul·rio de cadastro por post, para serem inseridos no banco de dados
  */
 function enviarCadastro() {
     let params = {
@@ -19,21 +20,21 @@ function enviarCadastro() {
         postData: 'jsonData=' + jsonFormData(),
         callback: (xhr) => {
             if (xhr.responseText === "create success") {
-                alert("Paciente cadastrado com sucesso.");
-                window.location.replace("/");
+                Modal.modalMessage('Paciente cadastrado com sucesso.', 'modal-stay');
+                Modal.enableModal('modal-stay');
             } else if (xhr.responseText === "update success") {
-                alert("Paciente editado com sucesso.");
-                window.location.replace("/");
+                Modal.modalMessage('Paciente editado com sucesso.', 'modal-redirect');
+                Modal.enableModal('modal-redirect');
             }
         }
-    };
+    }
     makeXMLHttpRequest(params);
     document.getElementById('cadastro-form').reset();
 }
 
 /*
-@cpf - string de n√∫meros do cpf
-Aplica a m√°scara no cpf (123.456.789-12)
+@cpf - string de n˙meros do cpf
+Aplica a m·scara no cpf (123.456.789-12)
  */
 function mascaraCpf(cpf) {
     cpf = cpf.replace(/\D/g, "");
@@ -42,15 +43,16 @@ function mascaraCpf(cpf) {
     cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     return cpf;
 }
+
 /*
-@strCPF - cpf em string com m√°scara
-Realiza a valida√ß√£o de CPF
-Retorna True se for v√°lido
+@strCPF - cpf em string com m·scara
+Realiza a validaÁ„o de CPF
+Retorna True se for v·lido
  */
 function testaCPF(strCPF) {
-    let Soma;
-    let Resto;
-    Soma = 0;
+    let soma;
+    let resto;
+    soma = 0;
 
     strCPF = strCPF.replace(/\./g, "");
     strCPF = strCPF.replace(/-/g, "");
@@ -60,21 +62,26 @@ function testaCPF(strCPF) {
         return false;
     }
 
-    for (let i = 1; i <= 9; i++) Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (11 - i);
-    Resto = (Soma * 10) % 11;
+    for (let i = 1; i <= 9; i++) soma = soma + parseInt(strCPF.substring(i - 1, i)) * (11 - i);
+    resto = (soma * 10) % 11;
 
-    if ((Resto === 10) || (Resto === 11)) Resto = 0;
-    if (Resto !== parseInt(strCPF.substring(9, 10))) return false;
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    if (resto !== parseInt(strCPF.substring(9, 10))) return false;
 
-    Soma = 0;
-    for (let i = 1; i <= 10; i++) Soma = Soma + parseInt(strCPF.substring(i - 1, i)) * (12 - i);
-    Resto = (Soma * 10) % 11;
+    soma = 0;
+    for (let i = 1; i <= 10; i++) soma = soma + parseInt(strCPF.substring(i - 1, i)) * (12 - i);
+    resto = (soma * 10) % 11;
 
-    if ((Resto === 10) || (Resto === 11)) Resto = 0;
-    return Resto === parseInt(strCPF.substring(10, 11));
+    if ((resto === 10) || (resto === 11)) resto = 0;
+    return resto === parseInt(strCPF.substring(10, 11));
 }
 
+/*
+Cria um eventListener no elemento com id = @elementId com funÁ„o de marcar para highlight caso o campo n„o esteja v·lido
+ */
 function required(elementId) {
+    let e = document.getElementById(elementId);
+    e.required
     let eventParams = {
         elementId: elementId,
         eventType: 'blur',
@@ -90,6 +97,9 @@ function required(elementId) {
     eventListener(eventParams);
 }
 
+/*
+Verifica se os @campos do formul·rio de cadastro est„o v·lidos e modifica as classes para dar o highlight pelo css
+ */
 function isValid(campos) {
     let valid = true;
     campos.forEach((e) => {
@@ -105,7 +115,7 @@ function isValid(campos) {
 }
 
 /*
-Fun√ß√£o chamada ap√≥s o carregamento da DOM pelo eventListener ouvindo "DOMContentLoaded"
+FunÁ„o chamada apÛs o carregamento da DOM pelo eventListener ouvindo "DOMContentLoaded"
  */
 function loadCadastro() {
     let campos = ['nome', 'sobrenome', 'cpf', 'nascimento'];
@@ -116,9 +126,12 @@ function loadCadastro() {
         callback: () => {
             let cpf = document.getElementById('cpf');
             if (!isValid(campos)) {
-                alert('Campos com * s√£o obrigat√≥rios.');
+                Modal.modalMessage('Campos com * s„o obrigatÛrios.', 'modal-stay');
+                Modal.enableModal('modal-stay');
+                setTimeout(()=>{Modal.disableModal('modal-stay')}, 3000)
             } else if (!testaCPF(cpf.value)) {
-                alert('CPF Inv√°lido.');
+                Modal.modalMessage('CPF Inv·lido.', 'modal-stay');
+                Modal.enableModal('modal-stay');
             } else {
                 enviarCadastro();
             }
@@ -137,6 +150,29 @@ function loadCadastro() {
             }
         }
     }
+    let closeParamsRedirect = {
+        elementId: 'close-modal-redirect',
+        eventType: 'click',
+        callbackParam: '',
+        callback: () => {
+            Modal.disableModal('modal-redirect');
+            window.location.replace("/");
+        }
+    }
+    let closeParams = {
+        elementId: 'close-modal-stay',
+        eventType: 'click',
+        callbackParam: '',
+        callback: () => {
+            Modal.disableModal('modal-stay');
+        }
+    }
+
+    let modal = new Modal();
+    modal.createModal('modal-redirect');
+    modal.createModal('modal-stay');
+    eventListener(closeParamsRedirect);
+    eventListener(closeParams);
 
     eventListener(btnEventParams);
     eventListener(cpfEventParams);

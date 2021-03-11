@@ -11,8 +11,8 @@ function deletar(data) {
         postData: '',
         callback: (xhr) => {
             if (xhr.responseText === 'delete success') {
-                window.location.href = "/";
-                alert('Paciente deletado com Sucesso.');
+                Modal.modalMessage('Paciente deletado com Sucesso.', 'modal-redirect');
+                Modal.enableModal('modal-redirect');
             }
         }
     };
