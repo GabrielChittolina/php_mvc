@@ -2,8 +2,10 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="/css/reset.css">
     <link rel="stylesheet" href="/css/main.css">
     <script src="/js/utils.js"></script>
+    <script src="/js/Modal.js"></script>
     <?php
         $path = $_SERVER['REQUEST_URI'] ?? '/';
         $position = strpos($path, '?');
@@ -16,6 +18,7 @@
             <link rel="stylesheet" href="/css/cadastro.css">
         <?php } else { ?>
             <script src="/js/deleteCard.js"></script>
+            <script src="/js/CardBuilder.js"></script>
             <script src="/js/listagem.js"></script>
             <link rel="stylesheet" href="/css/home.css">
         <?php } ?>
